@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebApi1.Models;
+namespace WebApi1;
 
 public partial class Repoteb
 {
+
     public int Id { get; set; }
 
     public string? Nam { get; set; }

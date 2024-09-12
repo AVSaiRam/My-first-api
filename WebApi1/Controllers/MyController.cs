@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32.SafeHandles;
 using System.Collections.Generic;
 using WebApi1.Models;
 
 namespace WebApi1.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("api/[controller]")]
     public class MyController : ControllerBase
     {
         NewDbContext dbcontext = new NewDbContext();
@@ -26,14 +26,10 @@ namespace WebApi1.Controllers
                     Description="you are NO 2"
                 }
                 };
-        [HttpGet()]
-        public ActionResult GetTest()
-        {
-            
-            return Ok(dbcontext.Repotebs.ToList());
-        }
+
 
         [HttpPost]
+        [Route("[action]")]
         public ActionResult AddData([FromBody] CustInfo info)
         {
 
@@ -50,5 +46,69 @@ namespace WebApi1.Controllers
             return Ok(c);
 
         }
+        [HttpGet]
+        public ActionResult GetTest()
+        {
+
+            return Ok(dbcontext.Repotebs.ToList());
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public ActionResult PostTest([FromQuery]Repoteb repoteb)
+        {
+            dbcontext.Repotebs.Add(repoteb);
+            dbcontext.SaveChanges();
+            return Ok(dbcontext.Repotebs.ToList());
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public ActionResult GetRTest([FromQuery]int id)
+        {
+            var result = dbcontext.Repotebs.Where(x => x.Id == id).FirstOrDefault();
+            return Ok(result);
+
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteTest([FromQuery]int id)
+        {
+            var result = dbcontext.Repotebs.Where(x => x.Id == id).FirstOrDefault();
+            if(result != null)
+            {
+                dbcontext.Repotebs.Remove(result);
+                dbcontext.SaveChanges();
+                return Ok(dbcontext.Repotebs.ToList());
+            }
+            else
+            {
+                return BadRequest("id doesnt exists");
+            }
+            
+        }
+        [HttpPut]
+        [Route("[action]")]
+        public ActionResult PutTest([FromQuery] int id,[FromBody]Repoteb repoteb)
+        {
+            var result = dbcontext.Repotebs.Where(x => x.Id == id).FirstOrDefault();
+            if(result != null)
+            {
+                result.Nam = repoteb.Nam;
+                result.Age=repoteb.Age;
+                result.Intrests = repoteb.Intrests;
+                result.Discription = repoteb.Discription;
+                dbcontext.SaveChanges();
+                return Ok(dbcontext.Repotebs.ToList());
+
+            }
+            else
+            {
+                return BadRequest("id doesnt exists");
+            }
+
+        }
+
+
+
     }
 }
