@@ -41,6 +41,10 @@ namespace WebApi1.Controllers
         public ActionResult AlterData([FromQuery]int id, [FromQuery] string name, [FromBody] string disc)
         {
            var value= c.Find(x=> x.Id == id);
+            if (value == null)
+            {
+                return NotFound("Id Doesnt exists");
+            }
             value.Name=name;
             value.Description=disc;
             return Ok(c);
@@ -54,11 +58,14 @@ namespace WebApi1.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public ActionResult PostTest([FromQuery]Repoteb repoteb)
+        public ActionResult PostTest([FromBody]Repoteb repoteb)
         {
             dbcontext.Repotebs.Add(repoteb);
             dbcontext.SaveChanges();
-            return Ok(dbcontext.Repotebs.ToList());
+            return CreatedAtAction("GetRTest", new
+            {
+                id=repoteb.Id
+            },repoteb);
         }
 
         [HttpGet]
@@ -66,6 +73,10 @@ namespace WebApi1.Controllers
         public ActionResult GetRTest([FromQuery]int id)
         {
             var result = dbcontext.Repotebs.Where(x => x.Id == id).FirstOrDefault();
+            if (result == null)
+            {
+                return NotFound("id doesnt exists");
+            }
             return Ok(result);
 
         }
